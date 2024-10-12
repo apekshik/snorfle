@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import FirecrawlApp, { CrawlParams, CrawlStatusResponse } from '@mendable/firecrawl-js';
 import OpenAI from "openai";
+import { summarizeInput } from '@/utils/xaiSummarizer';
+import { title } from 'process';
 
 
 interface PostInput {
@@ -72,7 +74,10 @@ export async function POST(request: NextRequest) {
       },
     }
 
-    return NextResponse.json({ response }, { status: 200 });
+    const summary = await summarizeInput(
+      [body.prompt, [{ title: body.title, website: body.link.toString(), markdown: scrapeResponse.markdown }]], xAi);
+
+    return NextResponse.json({ summary }, { status: 200 });
   } catch (error) {
     console.error('Error in POST /api/summarize:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });

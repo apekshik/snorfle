@@ -1,12 +1,12 @@
 import OpenAI from "openai";
 
-const openai = new OpenAI({
-  apiKey: "xxx",
-  baseURL: "https://api.x.ai/v1",
-});
+// const openai = new OpenAI({
+//   apiKey: "xxx",
+//   baseURL: "https://api.x.ai/v1",
+// });
 
 // Define the function that processes input_ and returns the result
-async function summarizeInput(input_) {
+export async function summarizeInput(input_, openai: OpenAI) {
   var prompt = input_[0];
   var result = [prompt, []];
 
