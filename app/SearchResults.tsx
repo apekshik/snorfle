@@ -27,7 +27,7 @@ const SearchResults: React.FC<SearchResultProps> = ({ results, loading }) => {
                   url={result.link}
                   title={result.title}
                   snippet={result.snippet}
-                  imageUrl={imageUrl} // Pass the extracted image URL to VishvaCard
+                  imageUrl={imageUrl} // Pass the extracted image URL
                 />
               </li>
             );

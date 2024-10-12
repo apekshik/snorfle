@@ -44,7 +44,7 @@ const Card: React.FC<CardProps> = ({
       try {
         // Use Promise.all to fetch both summary and images asynchronously
         const [summaryResponse, imagesResponse] = await Promise.all([
-          fetch("/api/summarize", {
+          fetch("/api/testSummary", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
