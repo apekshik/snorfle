@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
     // Parse the JSON body from the request
     const body: PostInput = await request.json();
 
-    console.log(body);
+    // console.log(body);
 
     const scrapeResponse = await firecrawlApp.scrapeUrl(body.link.toString(), {
       formats: ['markdown'],

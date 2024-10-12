@@ -36,44 +36,47 @@ const Card: React.FC<CardProps> = ({
   const videoId = getYouTubeVideoId(url);
 
   const handleMouseEnter = async () => {
-    setIsHovered(true);
-    if (!summary && !loading && !videoId) {
-      setLoading(true);
-      setLoadingSummary(true);
-      setLoadingImages(true); // Start loading for both summary and images
-      try {
-        // Use Promise.all to fetch both summary and images asynchronously
-        const [summaryResponse, imagesResponse] = await Promise.all([
-          fetch("/api/testSummary", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ url }),
-          }),
-          fetch("/api/fetch-images", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ url }), // Assuming you have an endpoint to fetch images
-          }),
+        setIsHovered(true);
+        if (!summary && !loading && !videoId) {
+        setLoading(true);
+        setLoadingSummary(true);
+        setLoadingImages(true); // Start loading for both summary and images
+    
+        try {
+            // Use Promise.all to fetch both summary and images asynchronously
+            const [summaryResponse] = await Promise.all([
+            // Fetch summary using the /api/testSummary endpoint
+            fetch("/api/summarize", {
+                method: "POST",
+                headers: {
+                "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                prompt: snippet, // or another prompt that you want to use
+                link: url,       // Pass the URL to be scraped
+                displayLink: websiteName, // Optional, but adds context
+                title: title,
+                snippet: snippet,
+                }),
+            }),
         ]);
-
-        const summaryData = await summaryResponse.json();
-        const imagesData = await imagesResponse.json();
-
-        setSummary(summaryData.summary);
-        setImages(imagesData.images || []); // Ensure images is always an array
-      } catch (error) {
-        console.error("Error fetching summary and images:", error);
-      } finally {
-        setLoading(false); // Stop loading for both summary and images
-        setLoadingSummary(false);
-        setLoadingImages(false);
-      }
-    }
-  };
+    
+            const summaryData = await summaryResponse.json();
+            // const imagesData = await imagesResponse.json();
+            console.log("Summary")
+            console.log(summaryData)
+            // Update the state with the fetched summary and images
+            setSummary(summaryData.summary);
+            // setImages(imagesData.images || []); // Ensure images is always an array
+        } catch (error) {
+            console.error("Error fetching summary and images:", error);
+        } finally {
+            setLoading(false); // Stop loading for both summary and images
+            setLoadingSummary(false);
+            setLoadingImages(false);
+        }
+        }
+    };
 
   const handleMouseLeave = () => {
     setIsHovered(false);
@@ -119,24 +122,6 @@ const Card: React.FC<CardProps> = ({
                   </div>
                 ) : (
                   <p>{summary}</p>
-                )}
-
-                {/* Display the images below the summary */}
-                {loadingImages ? (
-                  <div>
-                    <p className="font-bold">LOADING IMAGES</p>
-                    <div className="mt-2 flex w-full max-w-[300px] flex-row justify-center gap-2">
-                      <Skeleton className="h-32 w-32 rounded-lg" />
-                      <Skeleton className="h-32 w-32 rounded-lg" />
-                      <Skeleton className="h-32 w-32 rounded-lg" />
-                    </div>
-                  </div>
-                ) : (
-                  <div className="mt-2 flex flex-wrap items-center justify-center gap-2">
-                    {Array.isArray(images) && images.length > 0 && (
-                      <ImageGrid images={images} />
-                    )}
-                  </div>
                 )}
               </>
             )}
