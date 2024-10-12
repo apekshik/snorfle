@@ -77,7 +77,7 @@ export async function POST(request: NextRequest) {
     const summary = await summarizeInput(
       [body.prompt, [{ title: body.title, website: body.link.toString(), markdown: scrapeResponse.markdown }]], xAi);
 
-    return NextResponse.json({ ...summary }, { status: 200 });
+    return NextResponse.json({ response: summary[1] }, { status: 200 });
   } catch (error) {
     console.error('Error in POST /api/summarize:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
