@@ -1,29 +1,25 @@
-import OpenAI from "openai";
+// src/app/api/summarize/route.ts
+import { NextResponse } from 'next/server';
+import { generateSummary } from '@/utils/openai';
+import { fetchWebpageContent } from '@/utils/extractor';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,  // Store your API Key in a .env file
-});
-
-export async function generateSummary(webpageContent: string) {
+export async function POST(request: Request) {
   try {
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [
-        {
-          role: "user",
-          content: `Can you analyze the webpage content and return a short 4-5 line summary (return just the summary)? If no content was provided, then return No Content Provided. Content: ${webpageContent}`
-        }
-      ],
-      temperature: 0.7,
-      max_tokens: 2048,
-      top_p: 1,
-      frequency_penalty: 0,
-      presence_penalty: 0,
-    });
+    const { url } = await request.json();
 
-    return response.choices[0].message?.content;
-  } catch (error) {
-    console.error('Error in OpenAI API:', error);
-    throw new Error("Failed to generate summary.");
+    if (!url) {
+      return NextResponse.json({ error: "URL is required" }, { status: 400 });
+    }
+
+    // Fetch webpage content (without fetching images)
+    const content = await fetchWebpageContent(url);
+
+    // Generate summary using OpenAI API
+    const summary = await generateSummary(content);
+
+    // Return the summary (images are fetched separately now)
+    return NextResponse.json({ summary }, { status: 200 });
+  } catch (error: any) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
