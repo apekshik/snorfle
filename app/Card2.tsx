@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Skeleton } from "@nextui-org/react";
+import { Skeleton, Button } from "@nextui-org/react";
 import ImageGrid from "./ImageGrid";
-import YouTubePreview from "./YouTubePreview"; // Import the new YouTubePreview component
+import YouTubePreview from "./YouTubePreview";
 
 interface CardProps {
   websiteName: string;
@@ -18,14 +18,13 @@ const Card: React.FC<CardProps> = ({
   snippet,
   imageUrl,
 }) => {
-  const [isHovered, setIsHovered] = useState(false); // Track hover state
+  const [isHovered, setIsHovered] = useState(false);
   const [summary, setSummary] = useState<string | null>(null);
-  const [images, setImages] = useState<string[]>([]); // Store fetched images
-  const [loading, setLoading] = useState(false); // Track loading state
+  const [images, setImages] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
   const [loadingSummary, setLoadingSummary] = useState(false);
   const [loadingImages, setLoadingImages] = useState(false);
 
-  // Utility function to check if the URL is a YouTube link and extract the video ID
   const getYouTubeVideoId = (url: string): string | null => {
     const match = url.match(
       /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/,
@@ -40,9 +39,8 @@ const Card: React.FC<CardProps> = ({
     if (!summary && !loading && !videoId) {
       setLoading(true);
       setLoadingSummary(true);
-      setLoadingImages(true); // Start loading for both summary and images
+      setLoadingImages(true);
       try {
-        // Use Promise.all to fetch both summary and images asynchronously
         const [summaryResponse, imagesResponse] = await Promise.all([
           fetch("/api/testSummary", {
             method: "POST",
@@ -56,7 +54,7 @@ const Card: React.FC<CardProps> = ({
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({ url }), // Assuming you have an endpoint to fetch images
+            body: JSON.stringify({ url }),
           }),
         ]);
 
@@ -64,11 +62,11 @@ const Card: React.FC<CardProps> = ({
         const imagesData = await imagesResponse.json();
 
         setSummary(summaryData.summary);
-        setImages(imagesData.images || []); // Ensure images is always an array
+        setImages(imagesData.images || []);
       } catch (error) {
         console.error("Error fetching summary and images:", error);
       } finally {
-        setLoading(false); // Stop loading for both summary and images
+        setLoading(false);
         setLoadingSummary(false);
         setLoadingImages(false);
       }
@@ -79,6 +77,11 @@ const Card: React.FC<CardProps> = ({
     setIsHovered(false);
   };
 
+  const handlePeekFurther = () => {
+    // Implement the functionality for the Peek Further button
+    console.log("Peeking further into:", url);
+  };
+
   return (
     <div
       className="w-full overflow-hidden text-white transition-all duration-300 ease-in-out"
@@ -87,29 +90,45 @@ const Card: React.FC<CardProps> = ({
     >
       <div className="flex">
         <div className="flex-grow">
-          <h2 className="mb-1 text-xl font-bold text-blue-400">{title}</h2>
-          <p className="mb-1 text-sm text-gray-400">{websiteName}</p>
-          <a
-            href={url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mb-2 inline-block text-sm text-blue-500 hover:underline"
-          >
-            {url}
-          </a>
-
-          {/* Expandable content with dynamic height */}
+        <div className="flex justify-between items-start">
+        <div className="flex-grow">
+            <h2 className="mb-1 text-xl font-bold text-blue-400">{title}</h2>
+            <p className="mb-1 text-sm text-gray-400">{websiteName}</p>
+            <div className="flex items-center mb-2">
+            <a
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block text-sm text-blue-500 hover:underline mr-2"
+            >
+                {url}
+            </a>
+            </div>
+        </div>
+        <div className="flex-shrink-0 ml-4">
+            {isHovered && (
+            <Button
+                size="sm"
+                color="success"
+                onClick={handlePeekFurther}
+                variant="shadow"
+            >
+                Peek Further
+            </Button>
+            )}
+        </div>
+        </div>
+        
+         
           <div
             className={`text-gray-300 transition-all duration-300 ease-in-out ${
               isHovered ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0"
             } overflow-hidden`}
           >
-            {/* Show the video preview if it's a YouTube link and the card is hovered */}
             {videoId && isHovered ? (
-              <YouTubePreview videoId={videoId} /> // Use the new YouTubePreview component
+              <YouTubePreview videoId={videoId} />
             ) : (
               <div className="space-y-3">
-                {/* If loading, show skeleton; else show the summary and images */}
                 {loadingSummary ? (
                   <div className="flex w-full max-w-[300px] flex-col gap-2">
                     <p className="font-bold">GENERATING SUMMARY</p>
@@ -118,19 +137,16 @@ const Card: React.FC<CardProps> = ({
                     <Skeleton className="h-16 w-2/5 rounded-lg" />
                   </div>
                 ) : (
-                    <div>
-                        <p className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-red-800">
-                    Summary
+                  <div>
+                    <p className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-red-800">
+                      Summary
                     </p>
                     <div className="mt-2 p-4 border-2 border-yellow-400 rounded-md">
-                        {/* Summary title with gradient */}
-                       
-                        <p>{summary}</p>
+                      <p>{summary}</p>
                     </div>
-                    </div>
+                  </div>
                 )}
 
-                {/* Display the images below the summary */}
                 {loadingImages ? (
                   <div>
                     <p className="font-bold">LOADING IMAGES</p>
@@ -141,21 +157,20 @@ const Card: React.FC<CardProps> = ({
                     </div>
                   </div>
                 ) : (
-                   <div>
+                  <div>
                     {Array.isArray(images) && images.length > 0 && (
-                    <div>
-                    <p className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-600 to-blue-800">
-                        Photos
-                    </p>
-                    <div className="mt-2 p-4 border-2 border-pink-600 rounded-md"> 
-                        <div className="mt-2 flex flex-wrap items-center justify-center gap-2">
-                                  
+                      <div>
+                        <p className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-600 to-blue-800">
+                          Photos
+                        </p>
+                        <div className="mt-2 p-4 border-2 border-pink-600 rounded-md">
+                          <div className="mt-2 flex flex-wrap items-center justify-center gap-2">
                             <ImageGrid images={images} />
+                          </div>
                         </div>
+                      </div>
+                    )}
                   </div>
-                  </div>   
-                   )}
-                    </div>           
                 )}
               </div>
             )}
