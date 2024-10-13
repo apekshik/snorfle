@@ -118,9 +118,7 @@ const Card: React.FC<CardProps> = ({
                   color="success"
                   onClick={handlePeekFurther}
                   variant="shadow"
-                >
-                  Peek Further
-                </Button>
+                >Grok it</Button>
               )}
             </div>
           </div>
