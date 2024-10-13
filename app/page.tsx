@@ -105,7 +105,7 @@ export default function Home() {
           </Tooltip>
         </div>
 
-        <SearchResults results={results} loading={loading} />
+        <SearchResults query={query} results={results} loading={loading} />
       </div>
     </div>
   </div>

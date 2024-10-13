@@ -4,14 +4,48 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,  // Store your API Key in a .env file
 });
 
-export async function generateSummary(webpageContent: string) {
+export async function generateSummary(prompt: string, webpageContent: string) {
   try {
+    const systemPrompt = `
+**System Prompt:**
+
+You are an AI assistant designed to analyze markdown content from webpages and respond to user queries. When given a user query and webpage content, follow these rules:
+
+1. Generate a concise response (limited to 100 words) that directly answers the query, using any relevant code blocks from the webpage if appropriate.
+2. Only use code blocks that are already present in the webpage and only for code snippets.
+3. If no specific intent is recognized, provide a brief summary of the webpage content.
+
+Keep your responses precise and within the 100-word limit.
+    `;
+
+    const userPrompt = `
+**Prompt:**
+
+You are provided with the markdown content of a webpage and a user query. Your task is to process the markdown content and:
+
+1. Generate a concise snippet (within 100 words) that best answers the user's query.
+   - If the webpage contains relevant code blocks, include them in your response.
+   - Only use code blocks that are present in the webpage content.
+3. If no specific intent is recognized from the query, provide a brief summary of the page.
+
+**Inputs:**
+- **Markdown Content**: ${webpageContent}
+- **User Query**: ${prompt}
+
+**Output**: 
+- A relevant snippet answering the query (with code blocks if applicable), or a summary if no intent is detected. If irrelevant, state: "This page is irrelevant to the query."
+    `
+
     const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: "grok-preview",
       messages: [
         {
+          role: "system",
+          content: systemPrompt
+        },
+        {
           role: "user",
-          content: `Can you analyze the webpage content and return a short 4-5 line summary (return just the summary)? If no content was provided, then return No Content Provided. Content: ${webpageContent}`
+          content: userPrompt
         }
       ],
       temperature: 0.7,

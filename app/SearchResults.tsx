@@ -4,11 +4,12 @@ import Card from "./Card"; // Assuming Card component is named VishvaCard for yo
 import Card2 from './Card2'
 
 interface SearchResultProps {
+  query: string;
   results: Array<any>; // Array of search results
   loading: boolean; // Loading state to display while fetching results
 }
 
-const SearchResults: React.FC<SearchResultProps> = ({ results, loading }) => {
+const SearchResults: React.FC<SearchResultProps> = ({ query, results, loading }) => {
   return (
     <div className="mt-4">
       {results.length > 0 ? (
@@ -29,6 +30,7 @@ const SearchResults: React.FC<SearchResultProps> = ({ results, loading }) => {
                   title={result.title}
                   snippet={result.snippet}
                   imageUrl={imageUrl} // Pass the extracted image URL
+                  query={query}
                 />
               </li>
             );

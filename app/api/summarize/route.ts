@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import FirecrawlApp, { CrawlParams, CrawlStatusResponse } from '@mendable/firecrawl-js';
 import OpenAI from "openai";
 import { summarizeInput } from '@/utils/xaiSummarizer';
-import { title } from 'process';
 
 
 interface PostInput {

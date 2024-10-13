@@ -4,6 +4,7 @@ import ImageGrid from "./ImageGrid";
 import YouTubePreview from "./YouTubePreview";
 
 interface CardProps {
+  query: string;
   websiteName: string;
   url: string;
   title: string;
@@ -12,6 +13,7 @@ interface CardProps {
 }
 
 const Card: React.FC<CardProps> = ({
+  query,
   websiteName,
   url,
   title,
@@ -47,7 +49,7 @@ const Card: React.FC<CardProps> = ({
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({ url }),
+            body: JSON.stringify({ url, query }),
           }),
           fetch("/api/fetch-images", {
             method: "POST",

@@ -11,7 +11,7 @@ export async function fetchWebpageContent(url: string) {
     const content = $('p').map((_, el) => $(el).text()).get().join('\n');
     
     // Limit content length to avoid passing large inputs to the API
-    return content.length > 2000 ? content.slice(0, 2000) : content;
+    return content;
   } catch (error) {
     console.error('Error fetching webpage content:', error);
     throw new Error('Failed to fetch content.');
