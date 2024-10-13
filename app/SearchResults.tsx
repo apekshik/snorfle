@@ -37,7 +37,7 @@ const SearchResults: React.FC<SearchResultProps> = ({ query, results, loading })
           })}
         </ul>
       ) : (
-        !loading && <p className="text-white">No results found.</p>
+        !loading && <p className="text-white"></p>
       )}
     </div>
   );

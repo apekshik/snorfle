@@ -37,7 +37,7 @@ You are provided with the markdown content of a webpage and a user query. Your t
     `
 
     const response = await openai.chat.completions.create({
-      model: "grok-preview",
+      model: "gpt-4o-mini",
       messages: [
         {
           role: "system",

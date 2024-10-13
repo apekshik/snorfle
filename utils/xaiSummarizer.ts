@@ -6,7 +6,8 @@ import OpenAI from "openai";
 // });
 
 // Define the function that processes input_ and returns the result
-export async function summarizeInput(input_, openai: OpenAI) {
+
+export async function summarizeInput(input_: any[], openai: OpenAI) {
   var prompt = input_[0];
   var result = [prompt, []];
 
