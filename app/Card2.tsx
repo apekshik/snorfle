@@ -2,6 +2,10 @@ import React, { useState } from "react";
 import { Skeleton, Button } from "@nextui-org/react";
 import ImageGrid from "./ImageGrid";
 import YouTubePreview from "./YouTubePreview";
+import ReactMarkdown from 'react-markdown';
+import rehypeRaw from 'rehype-raw';
+import rehypeSanitize from 'rehype-sanitize';
+import rehypeHighlight from 'rehype-highlight';
 
 interface CardProps {
   query: string;
@@ -92,40 +96,39 @@ const Card: React.FC<CardProps> = ({
     >
       <div className="flex">
         <div className="flex-grow">
-        <div className="flex justify-between items-start">
-        <div className="flex-grow">
-            <h2 className="mb-1 text-xl font-bold text-blue-400">{title}</h2>
-            <p className="mb-1 text-sm text-gray-400">{websiteName}</p>
-            <div className="flex items-center mb-2">
-            <a
-                href={url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block text-sm text-blue-500 hover:underline mr-2"
-            >
-                {url}
-            </a>
+          <div className="flex justify-between items-start">
+            <div className="flex-grow">
+              <h2 className="mb-1 text-xl font-bold text-blue-400">{title}</h2>
+              <p className="mb-1 text-sm text-gray-400">{websiteName}</p>
+              <div className="flex items-center mb-2">
+                <a
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block text-sm text-blue-500 hover:underline mr-2"
+                >
+                  {url}
+                </a>
+              </div>
             </div>
-        </div>
-        <div className="flex-shrink-0 ml-4">
-            {isHovered && (
-            <Button
-                size="sm"
-                color="success"
-                onClick={handlePeekFurther}
-                variant="shadow"
-            >
-                Peek Further
-            </Button>
-            )}
-        </div>
-        </div>
-        
-         
+            <div className="flex-shrink-0 ml-4">
+              {isHovered && (
+                <Button
+                  size="sm"
+                  color="success"
+                  onClick={handlePeekFurther}
+                  variant="shadow"
+                >
+                  Peek Further
+                </Button>
+              )}
+            </div>
+          </div>
+
+
           <div
-            className={`text-gray-300 transition-all duration-300 ease-in-out ${
-              isHovered ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0"
-            } overflow-hidden`}
+            className={`text-gray-300 transition-all duration-300 ease-in-out ${isHovered ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0"
+              } overflow-hidden`}
           >
             {videoId && isHovered ? (
               <YouTubePreview videoId={videoId} />
@@ -144,7 +147,12 @@ const Card: React.FC<CardProps> = ({
                       Summary
                     </p>
                     <div className="mt-2 p-4 border-2 border-yellow-400 rounded-md">
-                      <p>{summary}</p>
+                      <ReactMarkdown
+                        rehypePlugins={[rehypeRaw, rehypeSanitize, rehypeHighlight]}
+                        className="markdown-content"
+                      >
+                        {summary || ''}
+                      </ReactMarkdown>
                     </div>
                   </div>
                 )}

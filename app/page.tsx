@@ -61,7 +61,7 @@ export default function Home() {
           The modern Search Engine
         </p>
       </div>
-      <div className="w-1/2">
+      <div className="w-2/3">
         <Textarea
           placeholder="Search through the Universe..."
           minRows={1}
