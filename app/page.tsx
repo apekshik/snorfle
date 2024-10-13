@@ -55,7 +55,7 @@ export default function Home() {
     <div className="flex h-full w-full flex-col items-center justify-center space-y-6">
       <div className="">
         <h1 className="text-center font-bebas text-6xl font-bold text-white">
-          SNORFEL
+          GROOKLE
         </h1>
         <p className="text-center font-bebas text-gray-400">
           The modern Search Engine

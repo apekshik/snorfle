@@ -108,7 +108,7 @@ const Card: React.FC<CardProps> = ({
             {videoId && isHovered ? (
               <YouTubePreview videoId={videoId} /> // Use the new YouTubePreview component
             ) : (
-              <>
+              <div className="space-y-3">
                 {/* If loading, show skeleton; else show the summary and images */}
                 {loadingSummary ? (
                   <div className="flex w-full max-w-[300px] flex-col gap-2">
@@ -118,7 +118,16 @@ const Card: React.FC<CardProps> = ({
                     <Skeleton className="h-16 w-2/5 rounded-lg" />
                   </div>
                 ) : (
-                  <p>{summary}</p>
+                    <div>
+                        <p className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-red-800">
+                    Summary
+                    </p>
+                    <div className="mt-2 p-4 border-2 border-yellow-400 rounded-md">
+                        {/* Summary title with gradient */}
+                       
+                        <p>{summary}</p>
+                    </div>
+                    </div>
                 )}
 
                 {/* Display the images below the summary */}
@@ -132,13 +141,23 @@ const Card: React.FC<CardProps> = ({
                     </div>
                   </div>
                 ) : (
-                  <div className="mt-2 flex flex-wrap items-center justify-center gap-2">
+                   <div>
                     {Array.isArray(images) && images.length > 0 && (
-                      <ImageGrid images={images} />
-                    )}
+                    <div>
+                    <p className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-600 to-blue-800">
+                        Photos
+                    </p>
+                    <div className="mt-2 p-4 border-2 border-pink-600 rounded-md"> 
+                        <div className="mt-2 flex flex-wrap items-center justify-center gap-2">
+                                  
+                            <ImageGrid images={images} />
+                        </div>
                   </div>
+                  </div>   
+                   )}
+                    </div>           
                 )}
-              </>
+              </div>
             )}
           </div>
         </div>
